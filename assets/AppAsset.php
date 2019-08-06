@@ -1,4 +1,4 @@
-<?php
+<?ph
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
