@@ -13,32 +13,23 @@ use yii\web\Controller;
 
 class ActivityController extends Controller
 {
-    public function actionProfile() {
-        echo 'Мы пришли куда хотели';
-    }
-
-    public function actionView()
+    public function actionCreate()
     {
         $model = new Activity();
-        $model->id = 5;
-        $model->title = '5 активность';
-        $model->body = 'Тело пятого активности';
-        $model->start_date = time();
-        $model->end_date = time()+24*60*60;
-        $model->cycle = true;
-        $model->main = true;
-
-        $model->attributes = [
-            'id' => 6,
-            'title' => 6,
-            'body' => 6,
-            'end_date' => 6,
-        ];
-
-
+        return $this->render('create', ['model'=>$model]);
+    }
+    public function actionIndex() {
+        return $this->render('index');
+    }
+    public function actionUpdate($id)
+    {
+        $model = new Activity();
+        $model->id = $id;
+        return $this->render('update', ['model'=>$model]);
+    }
+    public function actionView() {
+        $model = new Activity();
         return $this->render('view', ['model'=>$model]);
-
-
     }
 }
 
