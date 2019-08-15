@@ -37,8 +37,12 @@ class Activity extends Model
             'main'=>'главное',
         ];
 
-
     }
-
+    public function beforeSave($insert) {
+        if(empty($this->end_date)){
+            $this->end_date = $this->start_date;
+        }
+        return parent::beforeSave($insert);
+    }
 
 }
