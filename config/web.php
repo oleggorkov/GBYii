@@ -1,10 +1,9 @@
 <?php
-
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
-
 $config = [
     'id' => 'basic',
+    'language'=>'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -14,16 +13,19 @@ $config = [
     'modules' => [
         'admin' => [
             'class' => 'app\modules\admin\Module',
+            'layout' => 'main',
         ],
     ],
     'components' => [
-        'alerts' => [
-            'class'=>\app\components\AlertComponent::class,
-
+        'sessionComponent'=>[
+            'class'=>\app\components\SessionComponent::class,
+        ],
+        'messenger' => [
+            'class' => \app\components\MessengerComponent::class,
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '8pJaIZdMV_IfCGtsKjAl6tZ4Q8etx3i6',
+            'cookieValidationKey' => 'KMOhr1QvSh880DrNpNETvXF409nXRpzG',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -34,6 +36,9 @@ $config = [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'authManager' => [
+            'class' => \yii\rbac\DbManager::class,
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
@@ -61,16 +66,15 @@ $config = [
     ],
     'params' => $params,
 ];
-
-if (YII_ENV_DEV)  {
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
+    $config['bootstrap'][] = 'log';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['*'],
     ];
-
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
@@ -78,5 +82,4 @@ if (YII_ENV_DEV)  {
         'allowedIPs' => ['*'],
     ];
 }
-
 return $config;

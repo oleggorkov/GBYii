@@ -1,21 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: evg
- * Date: 03/08/2019
- * Time: 13:38
- */
 
 namespace app\models;
-
 use yii\base\Model;
-
-
 class Day extends Model
 {
     public $id;
-    public $work_day;
-    public $output_day;
-    public $activity;
-
+    public $title;
+    public $weekday;
+    public $working;
+    public $weekend;
+    public $activity_id;
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'id',
+            'title' => 'Дата',
+            'weekday' => 'День недели',
+            'working' => 'Рабочий день',
+            'weekend' => 'Выходной',
+            'activity_id' => 'id событий',
+        ];
     }
+    public function getActivity() {}
+}

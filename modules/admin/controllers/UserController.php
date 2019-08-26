@@ -1,16 +1,17 @@
 <?php
-namespace app\controllers;
+
+namespace app\modules\admin\controllers;
 use Yii;
-use app\models\Activity;
-use app\models\ActivitySearch;
+use app\modules\admin\models\User;
+use app\modules\admin\models\UserSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 /**
- * ActivityController implements the CRUD actions for Activity model.
+ * UserController implements the CRUD actions for User model.
  */
-class ActivityController extends Controller
+class UserController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -31,27 +32,19 @@ class ActivityController extends Controller
                     [
                         'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'allow' => true,
-                        'roles' => ['@', 'admin'],
+                        'roles' => ['admin'],
                     ],
                 ],
             ],
         ];
     }
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-        ];
-    }
     /**
-     * Lists all Activity models.
+     * Lists all User models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ActivitySearch();
+        $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -59,7 +52,7 @@ class ActivityController extends Controller
         ]);
     }
     /**
-     * Displays a single Activity model.
+     * Displays a single User model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -71,13 +64,13 @@ class ActivityController extends Controller
         ]);
     }
     /**
-     * Creates a new Activity model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Activity();
+        $model = new User();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -86,7 +79,7 @@ class ActivityController extends Controller
         ]);
     }
     /**
-     * Updates an existing Activity model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -103,7 +96,7 @@ class ActivityController extends Controller
         ]);
     }
     /**
-     * Deletes an existing Activity model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -115,15 +108,15 @@ class ActivityController extends Controller
         return $this->redirect(['index']);
     }
     /**
-     * Finds the Activity model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Activity the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Activity::findOne($id)) !== null) {
+        if (($model = User::findOne($id)) !== null) {
             return $model;
         }
         throw new NotFoundHttpException('The requested page does not exist.');

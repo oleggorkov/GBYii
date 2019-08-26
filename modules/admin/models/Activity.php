@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\modules\admin\models;
 use Yii;
 use yii\db\ActiveRecord;
 /**
@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
  * @property User[] $users
  * @property Calendar[] $calendarRecords
  */
-class Activity extends \yii\db\ActiveRecord
+class Activity extends ActiveRecord
 {
     const TIME_BEHAVIOR_NAME = 'timeBehavior';
     public function behaviors()
@@ -50,7 +50,7 @@ class Activity extends \yii\db\ActiveRecord
             [['end_date'], 'validateEndDate'],
             [['start_date', 'end_date'], 'date', 'format' => 'php:d.m.Y'],
             [['title', 'body'], 'string', 'max' => 255],
-            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
+//            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
         ];
     }
     /**

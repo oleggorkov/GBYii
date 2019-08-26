@@ -1,5 +1,7 @@
 <?php
+
 namespace app\controllers;
+
 use app\models\Activity;
 use app\models\Calendar;
 use app\models\User;
@@ -11,6 +13,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\SignupForm;
+
 class SiteController extends Controller
 {
     /**
@@ -46,6 +49,7 @@ class SiteController extends Controller
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -61,6 +65,7 @@ class SiteController extends Controller
             ],
         ];
     }
+
     /**
      * Displays homepage.
      *
@@ -70,6 +75,7 @@ class SiteController extends Controller
     {
         return $this->render('index');
     }
+
     /**
      * Login action.
      *
@@ -89,6 +95,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
     public function actionSignup()
     {
         $model = new SignupForm();
@@ -103,7 +110,9 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-    public function actionAddAdmin() {
+
+    public function actionAddAdmin()
+    {
         $user = User::find()->where(['username' => 'admin'])->one();
         if (empty($user)) {
             $user = new User();
@@ -124,19 +133,22 @@ class SiteController extends Controller
             echo 'админ уже есть';
         }
     }
-    public function actionCreateActivity() {
-        $user = User::find()->where(['id'=>5])->one();
+
+    public function actionCreateActivity()
+    {
+        $user = User::find()->where(['id' => 5])->one();
         $activity = new Activity();
         $activity->author_id = $user->id;
-        $activity->title = 'test'.time();
-        $activity->body = 'body'.time();
+        $activity->title = 'test' . time();
+        $activity->body = 'body' . time();
         $activity->start_date = time();
-        $activity->end_date = time()+24*3600;
-        if(!$activity->save()) {
+        $activity->end_date = time() + 24 * 3600;
+        if (!$activity->save()) {
             var_dump($activity->errors);
         }
         die();
     }
+
     public function actionFillCalendar()
     {
         $users = User::find()->all();
@@ -150,10 +162,11 @@ class SiteController extends Controller
             };
         }
     }
+
     public function actionGetUsers()
     {
         $activity = Activity::findOne(8);
-        $users =[];
+        $users = [];
         foreach ($activity->calendarRecords as $calendarRecord) {
             $users[] = $calendarRecord->user;
         }
@@ -161,6 +174,7 @@ class SiteController extends Controller
         $otherUsers = $activity->users();
         var_dump($otherUsers);
     }
+
     public function actionTest()
     {
         $activity = Activity::findOne(8);
@@ -168,6 +182,7 @@ class SiteController extends Controller
         var_dump($author);
         die();
     }
+
     /**
      * Logout action.
      *
@@ -178,6 +193,7 @@ class SiteController extends Controller
         Yii::$app->user->logout();
         return $this->goHome();
     }
+
     /**
      * Displays contact page.
      *
@@ -194,6 +210,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
     /**
      * Displays about page.
      *
