@@ -29,6 +29,10 @@ class Activity extends \yii\db\ActiveRecord
             'timeStamp' => [
                 'class' => \yii\behaviors\TimestampBehavior::class,
             ],
+            [
+                'class' => \app\behaviors\ActiveRecordCache::class,
+                'cacheKeyName' => self::tableName(),
+            ],
         ];
     }
     /**
@@ -52,6 +56,18 @@ class Activity extends \yii\db\ActiveRecord
             [['title', 'body'], 'string', 'max' => 255],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
         ];
+    }
+    public static function findOne($condition)
+    {
+        if (Yii::$app->cache->exists(self::tableName().'_'.$condition) === false) {
+            Yii::info('В кеше по этому ключу ничего нет');
+            $result = parent::findOne($condition);
+            Yii::$app->cache->set(self::tableName().'_'.$condition, $result);
+        } else {
+            Yii::info('Кеш найден');
+            $result = Yii::$app->cache->get(self::tableName().'_'.$condition);
+        }
+        return $result;
     }
     /**
      * {@inheritdoc}

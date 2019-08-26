@@ -1,11 +1,9 @@
 <?php
 
 namespace app\models;
-
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Activity;
-
 /**
  * ActivitySearch represents the model behind the search form of `app\models\Activity`.
  */
@@ -13,7 +11,6 @@ class ActivitySearch extends Activity
 {
     public $authorEmail;
     public $username;
-
     /**
      * {@inheritdoc}
      */
@@ -27,7 +24,6 @@ class ActivitySearch extends Activity
             [['title', 'body', 'authorEmail', 'username'], 'string'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -36,7 +32,6 @@ class ActivitySearch extends Activity
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
-
     /**
      * Creates data provider instance with search query applied
      *
@@ -46,7 +41,7 @@ class ActivitySearch extends Activity
      */
     public function search($params)
     {
-        $query = Activity::find()->joinWith('author as author');
+        $query = Activity::find()->joinWith('author as author')->where(['user_id'=>\Yii::$app->user->identity->id]);
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

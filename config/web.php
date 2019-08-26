@@ -1,4 +1,5 @@
 <?php
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $config = [
@@ -28,7 +29,15 @@ $config = [
             'cookieValidationKey' => 'KMOhr1QvSh880DrNpNETvXF409nXRpzG',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => \yii\caching\MemCache::class,
+            'useMemcached' => true,
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211,
+                    'persistent' => false,
+                ],
+            ],
         ],
         'user' => [
             'identityClass' => 'app\models\User',
