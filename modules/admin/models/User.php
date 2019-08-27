@@ -1,6 +1,7 @@
 <?php
 
 namespace app\modules\admin\models;
+use app\models\Calendar;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\web\IdentityInterface;

@@ -15,8 +15,9 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['created_at', 'updated_at'], 'integer'],
+//            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'status'], 'safe'],
+            [['created_at', 'updated_at'], 'date', 'format' => 'php:d.m.Y'],
         ];
     }
     /**
@@ -36,7 +37,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->where(['id' => \Yii::$app->user->identity->id]);
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -51,13 +52,28 @@ class UserSearch extends User
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+        if (!empty($this->created_at)) {
+            $dayStart = \Yii::$app->formatter->asTimestamp($this->created_at . ' 00:00:00');
+            $dayStop = \Yii::$app->formatter->asTimestamp($this->created_at . ' 23:59:59');
+            $query->andFilterWhere([
+                'between',
+                self::tableName() . '.created_at',
+                $dayStart,
+                $dayStop,
+            ]);
+        }
+        if (!empty($this->updated_at)) {
+            $dayStart = \Yii::$app->formatter->asTimestamp($this->updated_at . ' 00:00:00');
+            $dayStop = \Yii::$app->formatter->asTimestamp($this->updated_at . ' 23:59:59');
+            $query->andFilterWhere([
+                'between',
+                self::tableName() . '.created_at',
+                $dayStart,
+                $dayStop,
+            ]);
+        }
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['like', 'email', $this->email]);
         return $dataProvider;
     }

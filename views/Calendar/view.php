@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 /* @var $this yii\web\View */
-/* @var $model app\models\User */
+/* @var $model app\models\Calendar */
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Calendars', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="user-view">
+<div class="calendar-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -27,20 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-//            'id',
-            'username',
-//            'auth_key',
-//            'password_hash',
-//            'password_reset_token',
-            'email:email',
-//            'created_at:datetime',
-//            'updated_at:datetime',
-            [
-                'attribute'=>'status',
-                'value'=>function(\app\models\User $model){
-                    return \app\models\User::getStatuses()[$model->status];
-                }
-            ],
+            'id',
+            'user_id',
+            'activity_id',
+            'created_at',
+            'updated_at',
         ],
     ]) ?>
 

@@ -39,9 +39,6 @@ use yii\widgets\ActiveForm;
         ]
     ]); ?>
 
-
-    <?= $form->field($model, 'author_id')->textInput() ?>
-
     <?= $form->field($model, 'cycle')->checkbox() ?>
 
     <?= $form->field($model, 'main')->checkbox() ?>

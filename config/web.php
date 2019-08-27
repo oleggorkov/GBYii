@@ -29,16 +29,19 @@ $config = [
             'cookieValidationKey' => 'KMOhr1QvSh880DrNpNETvXF409nXRpzG',
         ],
         'cache' => [
-            'class' => \yii\caching\MemCache::class,
-            'useMemcached' => true,
-            'servers' => [
-                [
-                    'host' => 'localhost',
-                    'port' => 11211,
-                    'persistent' => false,
-                ],
-            ],
+            'class' => 'yii\caching\FileCache',
         ],
+//        'cache' => [
+//            'class' => \yii\caching\MemCache::class,
+//            'useMemcached' => true,
+//            'servers' => [
+//                [
+//                    'host' => '127.0.0.1',
+//                    'port' => 11211,
+//                    'persistent' => false,
+//                ],
+//            ],
+//        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,

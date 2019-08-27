@@ -41,7 +41,7 @@ class ActivitySearch extends Activity
      */
     public function search($params)
     {
-        $query = Activity::find()->joinWith('author as author')->where(['user_id'=>\Yii::$app->user->identity->id]);
+        $query = Activity::find()->joinWith('author as author')->where(['author_id'=>\Yii::$app->user->identity->id]);
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -49,7 +49,10 @@ class ActivitySearch extends Activity
                 'pageSize' => 5,
             ],
             'sort' => [
-                'defaultOrder' => ['created_at' => SORT_DESC],
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                    'updated_at' => SORT_DESC,
+                ],
             ],
         ]);
         $this->load($params);

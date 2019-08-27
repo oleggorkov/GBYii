@@ -1,20 +1,18 @@
 <?php
 
 namespace app\controllers;
-
-use app\models\Activity;
-use app\models\Calendar;
-use app\models\User;
+use app\models\SignupForm;
 use Yii;
+use app\models\User;
+use app\models\UserSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
+use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-use app\models\SignupForm;
-
-class SiteController extends Controller
+/**
+ * UserController implements the CRUD actions for User model.
+ */
+class UserController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -22,202 +20,109 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'actions' => ['logout', 'contact', 'index', 'about'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'actions' => ['test', 'error', 'add-admin'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['login', 'signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
+                    'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'error'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
     }
-
     /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
-    /**
-     * Displays homepage.
-     *
-     * @return string
+     * Lists all User models.
+     * @return mixed
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
-
-    public function actionSignup()
+    /**
+     * Displays a single User model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+    /**
+     * Creates a new User model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $user = $model->signup();
+            if (isset($user)) {
+                return $this->redirect(['view', 'id' => $user->id]);
             }
         }
-        return $this->render('signup', [
+        return $this->render('create', [
             'model' => $model,
         ]);
     }
-
-    public function actionAddAdmin()
-    {
-        $user = User::find()->where(['username' => 'admin'])->one();
-        if (empty($user)) {
-            $user = new User();
-            $user->username = 'admin';
-            $user->email = 'admin@admin.ru';
-            $user->setPassword('admin');
-            $user->generateAuthKey();
-            if ($user->save()) {
-                echo 'good';
-                $adminRole = Yii::$app->authManager->getRole('admin');
-                Yii::$app->authManager->assign($adminRole, $user->id);
-            } else {
-                var_dump($user->errors);
-            }
-        } else {
-            $adminRole = Yii::$app->authManager->getRole('admin');
-            Yii::$app->authManager->assign($adminRole, $user->id);
-            echo 'админ уже есть';
-        }
-    }
-
-    public function actionCreateActivity()
-    {
-        $user = User::find()->where(['id' => 5])->one();
-        $activity = new Activity();
-        $activity->author_id = $user->id;
-        $activity->title = 'test' . time();
-        $activity->body = 'body' . time();
-        $activity->start_date = time();
-        $activity->end_date = time() + 24 * 3600;
-        if (!$activity->save()) {
-            var_dump($activity->errors);
-        }
-        die();
-    }
-
-    public function actionFillCalendar()
-    {
-        $users = User::find()->all();
-        foreach ($users as $user) {
-            $calendarRecord = new Calendar();
-            $calendarRecord->user_id = $user->id;
-            $calendarRecord->activity_id = 9;
-            if ($calendarRecord->save() === false) {
-                var_dump($calendarRecord->id);
-                var_dump($calendarRecord->errors);
-            };
-        }
-    }
-
-    public function actionGetUsers()
-    {
-        $activity = Activity::findOne(8);
-        $users = [];
-        foreach ($activity->calendarRecords as $calendarRecord) {
-            $users[] = $calendarRecord->user;
-        }
-        var_dump($users);
-        $otherUsers = $activity->users();
-        var_dump($otherUsers);
-    }
-
-    public function actionTest()
-    {
-        $activity = Activity::findOne(8);
-        $author = $activity->author_id;
-        var_dump($author);
-        die();
-    }
-
     /**
-     * Logout action.
-     *
-     * @return Response
+     * Updates an existing User model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionLogout()
+    public function actionUpdate($id)
     {
-        Yii::$app->user->logout();
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-            return $this->refresh();
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-        return $this->render('contact', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }
-
     /**
-     * Displays about page.
-     *
-     * @return string
+     * Deletes an existing User model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionAbout()
+    public function actionDelete($id)
     {
-        return $this->render('about');
+        $this->findModel($id)->delete();
+        return $this->redirect(['index']);
+    }
+    /**
+     * Finds the User model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return User the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = User::findOne($id)) !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

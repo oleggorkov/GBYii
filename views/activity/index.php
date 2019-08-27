@@ -23,7 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'id',
+            'author.email',
+//            'id',
             'title',
             'body',
             [
@@ -58,20 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->formatter->asDate($model->end_date, 'php:d.m.Y');
                 }
             ],
-//            'end_date:datetime',
-//            [
-//                'attribute' => 'authorEmail',
-//                'value' => function (\app\models\Activity $model) {
-//                    return $model->author->email.' '.$model->author->id;
-//                }
-//            ],
-            [
-                'attribute' => 'username',
-                'value' => function (\app\models\Activity $model) {
-                    return $model->author->username;
-                }
-            ],
-//            'author_id',
             'cycle:boolean',
             'main:boolean',
             [

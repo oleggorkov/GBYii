@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
-/* @var $model app\models\ActivitySearch */
+/* @var $model app\models\CalendarSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="activity-search">
+<div class="calendar-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -16,21 +16,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'title') ?>
+    <?= $form->field($model, 'user_id') ?>
 
-    <?= $form->field($model, 'body') ?>
+    <?= $form->field($model, 'activity_id') ?>
 
-    <?= $form->field($model, 'start_date') ?>
+    <?= $form->field($model, 'created_at') ?>
 
-    <?= $form->field($model, 'end_date') ?>
-
-    <?php  echo $form->field($model, 'cycle') ?>
-
-    <?php  echo $form->field($model, 'main') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, 'updated_at') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
